@@ -7,7 +7,7 @@ const fs = require('fs');
 
 
 const PEXELS_API_KEY = process.env.PEXELS_API_KEY; // Get API key from .env
-const openai = new OpenAI({ key: process.env.OPENAI_API_KEY });
+
 
 
 
@@ -71,86 +71,50 @@ async function fetchMedia(query) {
 
 
 
-const prompts = [
+const hardcodedTweets = [
 
-    "How can AI be leveraged to improve customer service in small businesses?",
-    "Explore innovative ways AI can be integrated into daily life to enhance convenience.",
-    "What are the ethical considerations when using AI for decision-making in business?",
-    "Discuss the impact of AI on job markets and the need for reskilling in the workforce.",
-    "How can startups use AI to gain a competitive edge in their industries?",
-    "Explore the role of AI in optimizing supply chain management for larger corporations.",
-    "What steps can businesses take to ensure the responsible and transparent use of AI?",
-    "Investigate the potential of AI in healthcare for early disease detection and personalized treatment.",
-    "How can AI-driven chatbots enhance e-commerce and customer support experiences?",
-    "Discuss the challenges and benefits of implementing AI-driven automation in manufacturing.",
-    "Explore AI-powered marketing strategies for small businesses with limited budgets.",
-    "How can AI be used to analyze big data and drive data-driven decisions in organizations?",
-    "Investigate the role of AI in predicting and preventing cyberattacks in the business sector.",
-    "Discuss the ethical implications of AI-generated content in media and advertising.",
-    "Explore the future of autonomous vehicles and their impact on transportation and logistics.",
-    "How can AI-driven virtual assistants improve productivity and time management in business?",
-    "Discuss the potential for AI to revolutionize the field of agriculture and increase crop yields.",
-    "Investigate the use of AI in financial services for fraud detection and risk assessment.",
-    "How can AI-powered language translation tools bridge communication gaps in global businesses?",
-    "Explore the challenges and opportunities of integrating AI into education and online learning.",
-    "Discuss the role of AI in personalizing content recommendations on streaming platforms.",
-    "How can AI-driven predictive analytics benefit small businesses in making strategic decisions?",
-    "Investigate the impact of AI on the entertainment industry, from content creation to distribution.",
-    "Explore AI-powered tools for enhancing mental health and well-being in the workplace.",
-    "Discuss the potential for AI to assist in environmental conservation and sustainability efforts.",
-    "How can AI be used to optimize energy consumption in smart homes and buildings?",
-    "Investigate the challenges of bias and fairness in AI algorithms and their implications.",
-    "How can AI and blockchain technologies be leveraged to improve customer service in small businesses?",
-    "Explore innovative ways AI and blockchain can be integrated into daily life to enhance convenience.",
-    "What are the ethical considerations when using AI and blockchain for decision-making in business?",
+    "As AI and blockchain intertwine, they're creating groundbreaking crypto projects. What's your vision for this tech synergy in the next decade? Do you think it will redefine digital transactions? Share your thoughts. #TechFusion #DigitalFuture",
+    "AI's resilience in tech is notable, especially in the face of challenges. How do you see AI shaping our technological landscape in the years to come? What roles will AI play in future innovations? Discuss your predictions. #AIAdvancements #FutureTech",
+    "The impact of AI on material science and innovation is revolutionizing research and development. How do you believe this will reshape our approach to scientific breakthroughs and practical applications? Let's explore the possibilities. #AIInResearch #InnovationJourney",
+    "With AI reshaping cloud computing, we're witnessing a new era in technology. What transformative effects do you expect in the broader tech industry? How do you think this will change the way we interact with digital environments? #CloudEvolution #AITransformation",
+    "The integration of AI in game design is changing the gaming landscape. What are your thoughts on AI's role in future game development and player experiences? How will this technology alter the creative process in gaming? #GamingRevolution #AICreativePower",
+    "AI's growing influence in video content creation is opening new creative avenues. How do you see this impacting the media production landscape in the coming years? Will AI become an indispensable tool for creators? Share your insights. #MediaEvolution #AIinMedia",
+    "The merger of blockchain technology and AI is crafting unique solutions and opportunities. What impact do you think this fusion will have on our daily tech interactions and the future of digital infrastructure? Let's discuss the future. #TechFusion #BlockchainAI",
+    "As the debate on AI ethics and regulation gains momentum, what ethical guidelines and regulations do you believe are crucial for a responsible AI future? How should we balance innovation with ethical considerations? #EthicalAI #AIRegulation",
+    "AI's potential in automating tedious tasks is reshaping job dynamics across industries. How do you foresee this affecting employment and skill requirements in the future? What new opportunities do you think AI will create? #AIatWork #FutureOfWork",
+    "Blockchain technology's intersection with AI is opening new frontiers. What innovative applications and developments do you foresee emerging from this synergy? How will this combination transform existing industries? #BlockchainTech #AIIntegration",
+    "AI's crucial role in evolving cloud computing is setting new standards. How do you see this influencing the future of cloud services and data management? What advancements do you anticipate in cloud technology due to AI integration? #CloudAI #TechEvolution",
+    "The fusion of AI and blockchain is unlocking groundbreaking potential. What innovative applications and developments do you expect from this combination? How do you think this fusion will revolutionize various sectors? #InnovativeTech #AIBlockchain",
+    "AI is transforming content creation processes across mediums. What are your thoughts on AI's role in enhancing and streamlining the creative process? How do you think AI will influence content creators and the industry? #CreativeAI #ContentEvolution",
+    "As AI continues to evolve, its potential in enhancing cybersecurity is gaining attention. How do you foresee AI transforming our approach to digital security and privacy? What advancements and challenges do you predict in this vital field? #AISecurity #DigitalProtection",
+    "AI is revolutionizing the field of education. How do you envision AI shaping the future of learning and teaching? What impacts do you see on personalized education and global learning opportunities? #AIEducation #FutureOfLearning",
+    "The integration of AI in financial services is creating new opportunities. How do you think AI will change the landscape of banking and investment? What innovations do you anticipate in fintech driven by AI advancements? #AIFinance #FintechEvolution",
 
 
 
 
 ];
-async function getGeneratedTweet() {
-    try {
-        // Randomly pick a prompt from the prompts array
-        const randomPrompt = prompts[Math.floor(Math.random() * prompts.length)];
 
-        const response = await openai.completions.create({
-            model: "gpt-3.5-turbo-instruct",
-            prompt: randomPrompt,
-            max_tokens: 300,
-            temperature: 0.7
-        });
 
-        return response.choices[0].text.trim();
-    } catch (error) {
-        console.log("Error generating tweet:", error);
-    }
+
+function getHourlyTweet() {
+    const currentHour = new Date().getHours();
+    const tweetIndex = currentHour % hardcodedTweets.length;
+    return hardcodedTweets[tweetIndex];
 }
-const appendHashTagsAndMentions = (tweetContent) => {
-    return `${tweetContent} #AI #blockchain #technology`;
-};
 
 
 
 
-const trimToCompleteSentence = (tweet) => {
-    if (tweet.length <= 280) return tweet;
 
-    let lastValidEnd = tweet.lastIndexOf('.', 279);
-    if (lastValidEnd === -1) lastValidEnd = tweet.lastIndexOf('!', 279);
-    if (lastValidEnd === -1) lastValidEnd = tweet.lastIndexOf('?', 279);
-
-    return lastValidEnd !== -1 ? tweet.substring(0, lastValidEnd + 1) : tweet.substring(0, 277) + "...";
-};
 
 const tweet = async () => {
     try {
-        const tweetContent = await getGeneratedTweet();
+        const tweetContent = getHourlyTweet();
         if (tweetContent) {
-            const fullTweet = appendHashTagsAndMentions(tweetContent);
-            const trimmedTweet = trimToCompleteSentence(fullTweet);
 
             // 1. Fetch the image URL for "AI" topic
-            const mediaData = await fetchMedia( "technology", "crypto", "blockchain", "business", "innovation", "artificial intelligence", "robotics", "make money",);
+            const mediaData = await fetchMedia( "technology", "crypto", "blockchain", "business", "innovation", "artificial intelligence", "robotics", "make money" , "future", "tech", "ai", "machine learning", "data science", "data", "big data", "cloud computing", "cloud", "cybersecurity", "cyber security", "security", "privacy", "education", "learning", "teaching", "fintech", "finance", "banking", "investment", "money", "economy", "economics", "digital", "digital transformation", "digital future", "digitalization", "digitalisation", "digital transformation", "digitalization", "digitalisation",);
             const filename = `ai_media_${Date.now()}`;
 
             let mediaId;
@@ -164,8 +128,9 @@ const tweet = async () => {
                 await downloadVideo(mediaData.url, localVideoPath);
                 mediaId = await twitterClient.v1.uploadMedia(localVideoPath);
             }
+
             await twitterClient.v2.tweet({
-                text: trimmedTweet,
+                text: tweetContent,
                 media: {
                     media_ids: [mediaId]
                 }
@@ -181,6 +146,7 @@ const tweet = async () => {
 
 
 cron.schedule('0 * * * *', tweet);
+
 
 
 
